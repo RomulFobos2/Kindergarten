@@ -1,0 +1,12 @@
+RomulFobos1
+
+INSERT INTO t_role(id, name)
+  VALUES (1, 'ROLE_USER'), (2, 'ROLE_ADMIN'), (3, 'ROLE_MANAGER'); 
+
+
+INSERT INTO t_user_roles(user_id, roles_id)
+  VALUES (1, 2);
+
+INSERT INTO `t_user`(`first_name`, `last_name`, `need_change_pass`, `password`, `patronymic_name`, `username`) VALUES ("Воспитатель2","Воспитатель2",0,"23","Воспитатель2","vospit2")
+
+INSERT INTO `t_user_roles`(`user_id`, `roles_id`) VALUES (8,1)

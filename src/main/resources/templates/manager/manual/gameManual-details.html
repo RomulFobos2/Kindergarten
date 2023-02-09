@@ -1,0 +1,85 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Детальнее</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha1/css/bootstrap.min.css">
+    <style>
+        .blue{
+            background-color: #4682B4
+        }
+        {
+   box-sizing: border-box;
+}
+.image-wrapper {
+   position: relative;
+   max-width: 600px;
+   margin: 50px auto;
+   padding: 15px;
+   background: #DAEBE8;
+}
+.image-inner {
+   position: relative;
+}
+.image-wrapper img {
+   display: block;
+   width: 100%;
+}
+.image-wrapper:before, .image-wrapper:after, .image-inner:before, .image-inner:after {
+   content: "";
+   position: absolute;
+   width: 50px;
+   height: 50px;
+}
+.image-wrapper:before {
+   bottom: 0;
+   left: 0;
+   border-left: 6px double #384D26;
+   border-bottom: 6px double #384D26;
+}
+.image-wrapper:after {
+   right: 0;
+   top: 0;
+   border-right: 6px double #384D26;
+   border-top: 6px double #384D26;
+}
+.image-inner:before {
+   bottom: -15px;
+   right: -15px;
+   border-right: 6px double #384D26;
+   border-bottom: 6px double #384D26;
+}
+.image-inner:after {
+   top: -15px;
+   left: -15px;
+   border-left: 6px double #384D26;
+   border-top: 6px double #384D26;
+}
+
+    </style>
+</head>
+<body>
+<header th:insert="blocks/header :: header"></header>
+
+<div class="container mt-5" th:each="el : ${gameManual}">
+    <div class="alert alert-info mt-2">
+        <h1 th:text="${el.name}"/>
+        </a><a th:text="${'Тип: ' + el.type}"/>
+        <br>
+        </a><a th:text="${el.educationDirection.ageGroup.name + '->' + el.educationDirection.educationArea.name + '->' + el.educationDirection.name}"/>
+    </div>
+    <div class="d-flex justify-content-start flex-wrap">
+        <form class="form-row">
+            <a th:href="'/manager/allGameManuals'" class="btn btn-secondary mx-auto">Назад</a>
+            <a th:href="'/manager/editGameManual/' + ${el.id}" class="btn btn-warning">Редактировать</a>
+            <a th:href="'/manager/allGameManuals/gameManual-details/' + ${el.id} +'/download'" class="btn btn-success">Скачать
+                методический материал</a>
+        </form>
+        <form th:action="'/manager/allGameManuals/gameManual-details/' + ${el.id} +'/remove'" method="post">
+            <button class="btn btn-danger mx-1" type="submit">Удалить</button>
+        </form>
+    </div>
+</div>
+<div th:insert="blocks/footer :: footer"></div>
+</body>
+</html>

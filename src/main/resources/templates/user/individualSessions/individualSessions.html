@@ -1,0 +1,182 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Составление карты индивидуальной работы</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha1/css/bootstrap.min.css">
+</head>
+<body>
+<header th:insert="blocks/header :: header"></header>
+<div class="container-sm text-center">
+    <h1>Составление карты индивидуальной работы</h1>
+    <form method="post">
+        <div class="row g-3 text-center">
+            <div class="col-sm-2">
+                <a>ФИО</a>
+            </div>
+            <div class="col-sm-3">
+                <a>Основания для проведения индивидульной работы</a>
+            </div>
+            <div class="col-sm-3">
+                <a>Образовательная область</a>
+            </div>
+            <div class="col-sm-2">
+                <a>Содержание и направление индивидуальной работы</a>
+            </div>
+            <div class="col-sm-2">
+                <a>Дата проведения</a>
+            </div>
+        </div>
+
+        <div class="row g-3 text-center" th:each="resultMonitoring, index : ${allResultMonitorings}">
+            <div class="col-sm-2" hidden>
+                <input type="text" class="form-control" name="inputChild" th:id="'inputChild_' + ${index.index}"
+                       th:value="${resultMonitoring.child.id}">
+            </div>
+            <div class="col-sm-2">
+                <input type="text" class="form-control"
+                       th:value="${resultMonitoring.child.fullName}" disabled>
+            </div>
+
+
+            <div class="col-sm-2" hidden>
+                <input type="text" class="form-control" name="inputResultMonitoring" th:id="'inputResultMonitoring_'+ ${index.index}"
+                       th:value="${resultMonitoring.id}">
+            </div>
+            <div class="col-sm-3">
+                <textarea class="form-control" maxlength="300" wrap="soft" rows="3"
+                          th:text="${'Проблема с: ' + resultMonitoring.question}" disabled></textarea>
+            </div>
+
+
+            <div class="col-sm-3" hidden>
+                <input type="text" class="form-control" name="inputEducationArea"
+                       th:value="${resultMonitoring.educationDirection.educationArea.id}">
+            </div>
+            <div class="col-sm-3">
+                <input type="text" class="form-control"
+                       th:value="${resultMonitoring.educationDirection.educationArea.name}" disabled>
+            </div>
+
+            <div class="col-sm-2 g-3 text-center">
+                <div class="col-sm-2" hidden>
+                    <input type="text" class="form-control" name="inputEducationDirection" th:id="'inputEducationDirection_' + ${index.index}"
+                           th:value="${resultMonitoring.educationDirection.id}">
+                </div>
+                <div class="col-sm-12">
+                    <select class="form-select" name="inputTypeMaterial" th:id="'inputTypeMaterial_' + ${index.index}" required
+                            th:onchange="'touchSelect(' + ${index.index} + ')'">
+                        <option disabled selected>Вид занятия</option>
+                        <option value="0">Конспект</option>
+                        <option value="1">Беседа</option>
+                        <option value="2">Игра</option>
+                    </select>
+                </div>
+                <div class="col-sm-12">
+                    <select class="form-select" name="inputManual" th:id="'inputManual_' + ${index.index}" required>
+                        <option disabled >Материал для занятия</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-sm-2">
+                <input type="date" name="inputDate" th:id="'inputDate_' + ${index.index}" class="form-control"
+                       th:min="${#dates.format(startDate, 'yyyy-MM-dd')}"
+                       th:max="${#dates.format(endDate, 'yyyy-MM-dd')}"
+                       required>
+            </div>
+            <br>
+            <hr>
+            <br>
+        </div>
+        <div class="col-12">
+            <button type="submit" class="btn btn-primary">Сформировать план</button>
+            <a th:href="'/user'" class="btn btn-secondary my-2">Вернуться</a>
+        </div>
+    </form>
+</div>
+<div th:insert="blocks/footer :: footer"></div>
+<script th:inline="javascript">
+    function touchSelect(number){
+        var selectTypeMaterials = document.getElementById('inputTypeMaterial_' + number).value;
+        var selectEducationDirection = document.getElementById('inputEducationDirection_' + number).value;
+
+        <!--        Формируем массив со всеми лекциями-->
+        var allDataManuals = [];
+        /*[# th:each="manual : ${allManuals}"]*/
+        var var_arr = [];
+        var_arr.push(/*[[${manual.educationDirection.id}]]*/, /*[[${manual.id}]]*/, /*[[${manual.name}]]*/ );
+        allDataManuals.push(var_arr);
+        /*[/]*/
+
+        <!--        Формируем массив со всеми беседами-->
+        var allDataTalkManuals = [];
+        /*[# th:each="talkManual : ${allTalkManuals}"]*/
+        var var_arr_talk = [];
+        var_arr_talk.push(/*[[${talkManual.educationDirection.id}]]*/, /*[[${talkManual.id}]]*/, /*[[${talkManual.name}]]*/ );
+        allDataTalkManuals.push(var_arr_talk);
+        /*[/]*/
+
+        <!--        Формируем массив со всеми играми-->
+        var allDataGameManuals = [];
+        /*[# th:each="gameManual : ${allGameManuals}"]*/
+        var var_arr_game = [];
+        var_arr_game.push(/*[[${gameManual.educationDirection.id}]]*/, /*[[${gameManual.id}]]*/, /*[[${gameManual.name}]]*/ );
+        allDataGameManuals.push(var_arr_game);
+        /*[/]*/
+
+        if(selectTypeMaterials == 0){
+            var allResultDataManuals = [];
+            for (var i = 0; i < allDataManuals.length; i++) {
+                if(allDataManuals[i][0] == selectEducationDirection){
+                    allResultDataManuals.push(allDataManuals[i]);
+                }
+            }
+            allDataManuals = allResultDataManuals;
+            document.getElementById('inputManual_' + number).options.length = 1;
+            for (var i = 0; i < allDataManuals.length; i++) {
+<!--                let newOption = new Option(allDataManuals[i][2], allDataManuals[i][1]);-->
+                let newOption = new Option(allDataManuals[i][2], allDataManuals[i][2]);
+             	document.getElementById('inputManual_' + number).append(newOption);
+            }
+        }
+
+
+        if(selectTypeMaterials == 1){
+            var allResultDataTalkManuals = [];
+            for (var i = 0; i < allDataTalkManuals.length; i++) {
+                if(allDataTalkManuals[i][0] == selectEducationDirection){
+                    allResultDataTalkManuals.push(allDataTalkManuals[i]);
+                }
+            }
+            allDataTalkManuals = allResultDataTalkManuals;
+            document.getElementById('inputManual_' + number).options.length = 1;
+            for (var i = 0; i < allDataTalkManuals.length; i++) {
+<!--                let newOption = new Option(allDataTalkManuals[i][2], allDataTalkManuals[i][1]);-->
+                let newOption = new Option(allDataTalkManuals[i][2], allDataTalkManuals[i][2]);
+             	document.getElementById('inputManual_' + number).append(newOption);
+            }
+        }
+
+        if(selectTypeMaterials == 2){
+            var allResultDataGameManuals = [];
+            for (var i = 0; i < allDataGameManuals.length; i++) {
+                if(allDataGameManuals[i][0] == selectEducationDirection){
+                    allResultDataGameManuals.push(allDataGameManuals[i]);
+                }
+            }
+            allDataGameManuals = allResultDataGameManuals;
+            document.getElementById('inputManual_' + number).options.length = 1;
+            for (var i = 0; i < allDataGameManuals.length; i++) {
+<!--                let newOption = new Option(allDataGameManuals[i][2], allDataGameManuals[i][1]);-->
+                let newOption = new Option(allDataGameManuals[i][2], allDataGameManuals[i][2]);
+             	document.getElementById('inputManual_' + number).append(newOption);
+            }
+        }
+
+    }
+
+</script>
+</body>
+</html>
+
+

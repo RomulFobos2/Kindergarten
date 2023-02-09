@@ -1,0 +1,227 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Расписание</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha1/css/bootstrap.min.css">
+</head>
+<body>
+<header th:insert="blocks/header :: header"></header>
+
+<div class="container mt-5">
+    <form method="post">
+        <div class="col-sm-12 alert alert-success">
+            <h5 class="alert-heading text-center">Расписание</h5>
+            <div class="row">
+                <div class="col-sm-12 text-center" style="margin: 0 auto">
+
+                    <table class="table table-bordered table-hover table-striped table-light" id="myTab">
+                        <tbody>
+                        <tr>
+                            <td class="col-sm-1">Группа/День недели</td>
+                            <th:each th:each="days : ${weekDays}">
+                                <td th:text="${days}" class="col-sm-2"></td>
+                            </th:each>
+                        </tr>
+                        <th:each th:each="group, index : ${allGroups}">
+                            <tr>
+                                <td th:rowspan="${group.ageGroup.maxCountLesson}"
+                                    th:text="${group.groupName + ' (' + group.ageGroup.name + ')'}">
+
+                                </td>
+                                <th:each th:each="day, indexDay : ${weekDays}">
+                                    <td>
+                                        <div class="row g-3">
+                                            <div class="col-sm-12">
+                                                <select class="form-select" name="inputLesson"
+                                                        th:id="${group.id + '-' + indexDay.index  + '-0'}" required>
+                                                    <th:each th:each="lesson, indexLesson : ${group.lessons}">
+                                                        <option th:if="${lesson.dayWeek == day}"
+                                                                th:value="${lesson.id}"
+                                                                th:text="${lesson.name}">
+                                                        </option>
+                                                    </th:each>
+                                                </select>
+                                            </div>
+                                            <a>Время начала урока</a>
+                                            <div class="col-sm-6">
+                                                <select class="form-select" name="inputStartHour" id="inputHour_1"
+                                                        required>
+                                                    <option th:each="hour, index : ${workHour}"
+                                                            th:value="${index.index}"
+                                                            th:text="${hour}"
+                                                            th:selected="${group.getHourLesson(0, 0) == hour}">
+                                                    </option>
+                                                </select>
+                                            </div>
+                                            <div class="col-sm-6">
+                                                <select class="form-select" name="inputStartMinute" id="inputMinute_1"
+                                                        required>
+                                                    <option th:each="minute, index : ${workMinute}"
+                                                            th:value="${index.index}" th:text="${minute}"
+                                                            th:selected="${group.getMinuteLesson(0, 0) == minute}">
+                                                    </option>
+                                                </select>
+                                            </div>
+                                            <a>Время конца урока</a>
+                                            <div class="col-sm-6">
+                                                <select class="form-select" name="inputEndHour" id="inputHour_2"
+                                                        required>
+                                                    <option th:each="hour, index : ${workHour}"
+                                                            th:value="${index.index}"
+                                                            th:text="${hour}"
+                                                            th:selected="${group.getHourEndLesson(0, 0) == hour}">
+                                                    </option>
+                                                </select>
+                                            </div>
+                                            <div class="col-sm-6">
+                                                <select class="form-select" name="inputEndMinute" id="inputMinute_2"
+                                                        required>
+                                                    <option th:each="minute, index : ${workMinute}"
+                                                            th:value="${index.index}" th:text="${minute}"
+                                                            th:selected="${group.getMinuteEndLesson(0, 0) == minute}">
+                                                    </option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </th:each>
+                            </tr>
+                            <tr th:each="lessonsInDay, indexLessonInDay : ${myService.getForThymeleafList(group.ageGroup.maxCountLesson-1)}">
+                                <th:each th:each="day, indexDay : ${weekDays}">
+                                    <td>
+                                        <div class="row g-3">
+                                            <div class="col-sm-12">
+                                                <select class="form-select" name="inputLesson"
+                                                        th:id="${group.id + '-' + indexDay.index + '-' + (indexLessonInDay.index+1)}"
+                                                        required>
+                                                    <th:each th:each="lesson, indexLesson : ${group.lessons}">
+                                                        <option th:if="${lesson.dayWeek == day}"
+                                                                th:value="${lesson.id}"
+                                                                th:text="${lesson.name}">
+                                                        </option>
+                                                    </th:each>
+                                                    <option selected value="-1">Пусто</option>
+                                                </select>
+                                            </div>
+                                            <a>Время начала урока</a>
+                                            <div class="col-sm-6">
+                                                <select class="form-select" name="inputStartHour" id="inputHour_3"
+                                                        required>
+                                                    <option th:each="hour, index : ${workHour}"
+                                                            th:value="${index.index}"
+                                                            th:text="${hour}"
+                                                            th:selected="${group.getHourLesson(indexDay.index, indexLessonInDay.index+1) == hour}">
+                                                    </option>
+                                                </select>
+                                            </div>
+                                            <div class="col-sm-6">
+                                                <select class="form-select" name="inputStartMinute" id="inputMinute_3"
+                                                        required>
+                                                    <option th:each="minute, index : ${workMinute}"
+                                                            th:value="${index.index}" th:text="${minute}"
+                                                            th:selected="${group.getMinuteLesson(indexDay.index, indexLessonInDay.index+1) == minute}">
+                                                    </option>
+                                                </select>
+                                            </div>
+                                            <a>Время конца урока</a>
+                                            <div class="col-sm-6">
+                                                <select class="form-select" name="inputEndHour" id="inputHour_4"
+                                                        required>
+                                                    <option th:each="hour, index : ${workHour}"
+                                                            th:value="${index.index}"
+                                                            th:text="${hour}"
+                                                            th:selected="${group.getHourEndLesson(indexDay.index, indexLessonInDay.index+1) == hour}">
+                                                    </option>
+                                                </select>
+                                            </div>
+                                            <div class="col-sm-6">
+                                                <select class="form-select" name="inputEndMinute" id="inputMinute_4"
+                                                        required>
+                                                    <option th:each="minute, index : ${workMinute}"
+                                                            th:value="${index.index}" th:text="${minute}"
+                                                            th:selected="${group.getMinuteEndLesson(indexDay.index, indexLessonInDay.index+1) == minute}">
+                                                    </option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </th:each>
+                            </tr>
+                        </th:each>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <button class="btn btn-info mx-1" type="submit">Сохранить расписание</button>
+        <a th:href="'/manager/allLessons/removeLesson'" class="btn btn-danger mx-auto">Сформировать расписание заново</a>
+        <form class="form-row">
+            <a th:href="'/manager/'" class="btn btn-secondary mx-auto">Назад</a>
+        </form>
+        <br>
+
+    </form>
+</div>
+<div th:insert="blocks/footer :: footer"></div>
+<script th:inline="javascript">
+<!--Получаю все селекты с уроками-->
+        var allInputLesson = document.getElementsByName('inputLesson');
+        for (var i = 0; i < allInputLesson.length; i++) {
+<!--Каждому селекту для урока выбираю значение номера урока из списка, которое беру из ID элемента -->
+<!--У которога имя в виде id_группы-индекс_дня_недели-номер_урока -->
+            var idElement = allInputLesson[i].id;
+            var countLessonInDay = idElement.split('-')[2];
+            allInputLesson[i].children[countLessonInDay].selected = true;
+        }
+
+<!--В каждый селект с уроками добавляю в конец все доступные уроки для группы, кроме тех которые уже туда втавлены тимливом-->
+<!--Формирую массив, где элемент с номером N будет соответствовать группе с id N-->
+<!--У каждой группы будет массив уроков, с 2 элементами id урока и имя урока-->
+                /*<![CDATA[*/
+<!--                Готовлю пустой массив, чтобы поместить туда группу, порядковоый номер которой в массиве будет соответствовать ее id в БД-->
+             	var groups = [];
+             	var size = 1 + /*[[${maxIDGroup}]]*/ ;
+             	for (var i = 0; i < size; i++) {
+             	    var pusto = [];
+             		groups.push(pusto);
+             	}
+
+<!--             	У каждой группы доставю массив уроков, и каждый из каждого урока формирую массиф, добавляю его в массив уроков, который добавлю в масиив группы-->
+             	/*[# th:each="elVar : ${allGroups}"]*/
+             	var index = /*[[${elVar.id}]]*/;
+
+             	var lessons = [];
+                /*[# th:each="groupLesson : ${elVar.lessons}"]*/
+                    var var_arr = [];
+                    var_arr.push(/*[[${groupLesson.id}]]*/, /*[[${groupLesson.name}]]*/);
+                    groups[index].push(var_arr);
+                /*[/]*/
+             	/*[/]*/
+             	/*]]>*/
+
+                for (var i = 0; i < allInputLesson.length; i++) {
+                    var idElement = allInputLesson[i].id;
+                    var groupId = idElement.split('-')[0];
+                    for(var c = 0; c < groups[groupId].length; c++){
+                        var lessonId = groups[groupId][c][0];
+                        var lessonName = groups[groupId][c][1];
+                        var check = true;
+                        for(var j = 0; j < allInputLesson[i].length; j++){
+                            if(lessonId == allInputLesson[i][j].value){
+                                check = false;
+                            }
+                        }
+                        if(check){
+                            let newOption = new Option(lessonName, lessonId);
+                            allInputLesson[i].append(newOption);
+                        }
+                    }
+                }
+
+
+
+</script>
+</body>
+</html>

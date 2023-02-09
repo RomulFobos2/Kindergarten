@@ -1,0 +1,99 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Педагогический мониторинг</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha1/css/bootstrap.min.css">
+</head>
+<body>
+<header th:insert="blocks/header :: header"></header>
+<div class="container-sm">
+    <h1 th:text="${'Выставление оценок в области: ' + educationDirection.name}"></h1>
+    <form action="/user/report" method="post" class="row g-3">
+        <table class="table table-bordered" id="myTab">
+            <tbody>
+            <tr>
+                <td>ФИО Ребенка</td>
+                <td th:each="question : ${allQuestion}" th:text="${question.question}"></td>
+            </tr>
+            <tr th:each="child, index : ${allChildren}">
+                <td th:text="${index.index + 1 + '. ' + child.lastName + ' ' + child.firstName + ' ' + child.patronymicName}"></td>
+                <td th:each="question : ${allQuestion}"></td>
+            </tr>
+            </tbody>
+        </table>
+        <div class="col-12">
+<!--            <button type="submit" class="btn btn-primary" onclick="fnExcelReport()">Сформировать отчет</button>-->
+            <input type="button" class="btn btn-primary" onclick="fnExcelReport()" value="Сформировать отчет"></input>
+            <a th:href="'/user/'" class="btn btn-secondary my-2">Вернуться</a>
+        </div>
+    </form>
+</div>
+<div th:insert="blocks/footer :: footer"></div>
+<script th:inline="javascript">
+function ExportToExcel(){
+       var htmltable= document.getElementById('myTab');
+       var html = htmltable.outerHTML;
+       window.open('data:application/vnd.ms-excel,' + encodeURIComponent(html));
+    }
+
+
+    function fnExcelReport()
+{
+    var tab_text="<table border='2px'><tr bgcolor='#87AFC6'>";
+    var textRange; var j=0;
+    tab = document.getElementById('myTab'); // id of table
+
+    for(j = 0 ; j < tab.rows.length ; j++)
+    {
+        tab_text=tab_text+tab.rows[j].innerHTML+"</tr>";
+        //tab_text=tab_text+"</tr>";
+    }
+
+    tab_text=tab_text+"</table>";
+    tab_text= tab_text.replace(/<A[^>]*>|<\/A>/g, "");//remove if u want links in your table
+    tab_text= tab_text.replace(/<img[^>]*>/gi,""); // remove if u want images in your table
+    tab_text= tab_text.replace(/<input[^>]*>|<\/input>/gi, ""); // reomves input params
+
+    var ua = window.navigator.userAgent;
+    var msie = ua.indexOf("MSIE ");
+
+    if (msie > 0 || !!navigator.userAgent.match(/Trident.*rv\:11\./))      // If Internet Explorer
+    {
+        txtArea1.document.open("txt/html","replace");
+        txtArea1.document.write(tab_text);
+        txtArea1.document.close();
+        txtArea1.focus();
+        sa=txtArea1.document.execCommand("SaveAs",true,"Say Thanks to Sumit.xls");
+    }
+    else                 //other browser not tested on IE 11
+        sa = window.open('data:application/vnd.ms-excel,' + encodeURIComponent(tab_text));
+
+    return (sa);
+}
+
+
+var tds = document.querySelectorAll('td');
+
+for (var i = 0; i < tds.length; i++) {
+	tds[i].addEventListener('click', function func() {
+		var input = document.createElement('input');
+		input.value = this.innerHTML;
+		this.innerHTML = '';
+		this.appendChild(input);
+
+		var td = this;
+		input.addEventListener('blur', function() {
+			td.innerHTML = this.value;
+			td.addEventListener('click', func);
+		});
+
+		this.removeEventListener('click', func);
+	});
+}
+
+</script>
+</body>
+</html>
+
+

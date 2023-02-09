@@ -1,0 +1,38 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Список методических материалов</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha1/css/bootstrap.min.css">
+
+</head>
+<body>
+<header th:insert="blocks/header :: header"></header>
+
+<div class="container mt-5">
+    <h1>Методические материалы</h1>
+    <div class="alert alert-info mt-2">
+        <h1>Конспекты</h1>
+        <a th:href="'/manager/allManuals/'" class="btn btn-warning">Детальнее</a>
+    </div>
+
+    <div class="alert alert-primary mt-2">
+        <h1>Беседы</h1>
+        <a th:href="'/manager/allTalkManuals/'" class="btn btn-warning">Детальнее</a>
+    </div>
+
+    <div class="alert alert-success mt-2">
+        <h1>Игры</h1>
+        <a th:href="'/manager/allGameManuals/'" class="btn btn-warning">Детальнее</a>
+    </div>
+
+    <div class="pagination justify-content-start">
+        <div class="d-flex justify-content-start flex-wrap">
+            <a th:href="'/manager'" class="btn btn-secondary my-auto">Назад</a>
+            <a th:href="'/manager/addManual'" class="btn btn-success mx-1">Добавить методический материал</a>
+        </div>
+    </div>
+</div>
+<div th:insert="blocks/footer :: footer"></div>
+</body>
+</html>

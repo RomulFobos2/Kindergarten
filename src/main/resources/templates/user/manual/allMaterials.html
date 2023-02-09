@@ -1,0 +1,415 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Просмотр доступных методических материалов</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha1/css/bootstrap.min.css">
+</head>
+<body>
+<header th:insert="blocks/header :: header"></header>
+<div class="container-sm">
+    <h1>Просмотр доступных методических материалов</h1>
+    <form method="post" class="row g-3">
+        <p class="fs-6 text-danger" th:text="${educationDirectionNameError}"></p>
+
+
+        <div class="col-sm-4">
+            <select class="form-select" name="inputTypeMaterial" id="inputTypeMaterial" onchange="touchSelect()">
+                <option selected disabled value="">Выберите тип методического материала</option>
+                <option value="-1">Все типы</option>
+                <option value="0">Лекция</option>
+                <option value="1">Беседа</option>
+                <option value="2">Игра</option>
+            </select>
+        </div>
+
+        <div class="col-sm-4">
+            <select class="form-select" name="inputEducationArea" id="inputEducationArea" onchange="touchSelect()">
+                <option disabled value="">Выберите образовательную область</option>
+                <option selected value="-1">Все образовательные области</option>
+                <option th:each="el : ${allEducationAreas}" th:value="${el.id}"
+                        th:text="${el.name}"></option>
+            </select>
+        </div>
+        <div class="col-sm-4">
+            <select class="form-select" name="inputAgeGroup" id="inputAgeGroup" onchange="touchSelect()">
+                <option disabled value="">Выберите возрастную группу</option>
+                <option selected value="-1">Все возрастные группы</option>
+                <option th:each="el : ${allAgeGroups}" th:value="${el.id}"
+                        th:text="${el.name}"></option>
+            </select>
+        </div>
+        <div class="col-sm-3">
+            <select class="form-select" name="inputType" id="inputType" onchange="touchSelect()" hidden>
+                <option disabled value="">Выберите вид занятия</option>
+                <option selected value="-1">Все виды занятий</option>
+                <option value="Обобщающие">Обобщающие</option>
+                <option value="Обучающие">Обучающие</option>
+                <option value="Закрепляющие">Закрепляющие</option>
+            </select>
+        </div>
+        <div class="col-sm-3">
+            <select class="form-select" name="inputForm" id="inputForm" onchange="touchSelect()" hidden>
+                <option disabled value="">Выберите форму занятия</option>
+                <option selected value="-1">Все формы занятий</option>
+                <option value="Игровая">Игровая</option>
+                <option value="Традиционное занятие">Традиционное занятие</option>
+                <option value="Путешествие">Путешествие</option>
+            </select>
+        </div>
+
+        <div class="col-sm-3">
+            <select class="form-select" name="inputTypeGame" id="inputTypeGame" onchange="touchSelect()" hidden>
+                <option disabled value="">Выберите тип игры</option>
+                <option selected value="-1">Все типы игр</option>
+                <option value="Дидактическая">Дидактическая</option>
+                <option value="Ситуационная">Ситуационная</option>
+                <option value="Игровое упражнение">Игровое упражнение</option>
+            </select>
+        </div>
+
+        <div class="col-sm-12 alert alert-success">
+            <h5 class="alert-heading">Имеющиеся методические материалы</h5>
+            <div class="row" id="manuals">
+
+            </div>
+        </div>
+        <div class="col-12">
+            <a th:href="'/user/'" class="btn btn-secondary my-2">Вернуться</a>
+        </div>
+    </form>
+    <div class="col-sm-10">
+        <h4><a href="/user/allManuals/5/download" text="1231"></a></h4><a href="/user/allManuals/5/download" text="1231">
+    </a></div>
+</div>
+<div th:insert="blocks/footer :: footer"></div>
+<script th:inline="javascript">
+    function touchSelect(){
+        var inputManuals = document.getElementById('manuals');
+        inputManuals.innerHTML = "";
+
+        var selectTypeMaterials = document.getElementById('inputTypeMaterial').value;
+        var selectEducationArea = document.getElementById('inputEducationArea').value;
+        var selectAgeGroup = document.getElementById('inputAgeGroup').value;
+
+
+<!--        alert(selectTypeMaterials);-->
+<!--        alert(selectEducationArea);-->
+<!--        alert(selectAgeGroup);-->
+
+
+<!--        Формируем массив со всеми лекциями-->
+        var allDataManuals = [];
+        /*[# th:each="manual : ${allManuals}"]*/
+        var var_arr = [];
+        var_arr.push(/*[[${manual.educationDirection.educationArea.id}]]*/, /*[[${manual.educationDirection.ageGroup.id}]]*/, /*[[${manual.type}]]*/, /*[[${manual.form}]]*/, /*[[${manual.id}]]*/, /*[[${manual.name}]]*/ );
+        allDataManuals.push(var_arr);
+        /*[/]*/
+
+        <!--        Формируем массив со всеми беседами-->
+        var allDataTalkManuals = [];
+        /*[# th:each="talkManual : ${allTalkManuals}"]*/
+        var var_arr_talk = [];
+        var_arr_talk.push(/*[[${talkManual.educationDirection.educationArea.id}]]*/, /*[[${talkManual.educationDirection.ageGroup.id}]]*/, /*[[${talkManual.id}]]*/, /*[[${talkManual.name}]]*/ );
+        allDataTalkManuals.push(var_arr_talk);
+        /*[/]*/
+
+        <!--        Формируем массив со всеми играми-->
+        var allDataGameManuals = [];
+        /*[# th:each="gameManual : ${allGameManuals}"]*/
+        var var_arr_game = [];
+        var_arr_game.push(/*[[${gameManual.educationDirection.educationArea.id}]]*/, /*[[${gameManual.educationDirection.ageGroup.id}]]*/, /*[[${gameManual.type}]]*/, /*[[${gameManual.id}]]*/, /*[[${gameManual.name}]]*/ );
+        allDataGameManuals.push(var_arr_game);
+        /*[/]*/
+
+<!--        alert(allDataManuals);-->
+<!--        alert(allDataTalkManuals);-->
+<!--        alert(allDataGameManuals);-->
+
+<!--        Начало формирования лекций-->
+        if(selectTypeMaterials == 0){
+            var selectEdType = document.getElementById('inputType').hidden = false;
+            var selectEdForm = document.getElementById('inputForm').hidden = false;
+
+            var selectEdTypeGame = document.getElementById('inputTypeGame').hidden = true;
+
+            var selectEdType = document.getElementById('inputType').value;
+            var selectEdForm = document.getElementById('inputForm').value;
+
+
+<!--            alert(selectEdType);-->
+<!--            alert(selectEdForm);-->
+
+            var allResultDataManuals = [];
+    <!--        Отсеиваем по одному критерии, через 4 проверки будут те лекции, которые подходят по фильтру-->
+
+            if(selectEducationArea != -1){
+                for (var i = 0; i < allDataManuals.length; i++) {
+                    if(allDataManuals[i][0] == selectEducationArea){
+                        allResultDataManuals.push(allDataManuals[i]);
+                    }
+                }
+                allDataManuals = allResultDataManuals;
+                allResultDataManuals = [];
+            }
+
+            if(selectAgeGroup != -1){
+                for (var i = 0; i < allDataManuals.length; i++) {
+                    if(allDataManuals[i][1] == selectAgeGroup){
+                        allResultDataManuals.push(allDataManuals[i]);
+                    }
+                }
+                allDataManuals = allResultDataManuals;
+                allResultDataManuals = [];
+            }
+
+            if(selectEdType != -1){
+                for (var i = 0; i < allDataManuals.length; i++) {
+                    if(allDataManuals[i][2] == selectEdType){
+                        allResultDataManuals.push(allDataManuals[i]);
+                    }
+                }
+                allDataManuals = allResultDataManuals;
+                allResultDataManuals = [];
+            }
+
+            if(selectEdForm != -1){
+                for (var i = 0; i < allDataManuals.length; i++) {
+                    if(allDataManuals[i][3] == selectEdForm){
+                        allResultDataManuals.push(allDataManuals[i]);
+                    }
+                }
+                allDataManuals = allResultDataManuals;
+                allResultDataManuals = [];
+            }
+
+            for(var i = 0; i < allDataManuals.length; i++){
+                var inputManuals = document.getElementById('manuals');
+                var htmlICode = `<div class="col-sm-10">
+                <a href="/user/allManuals/` + allDataManuals[i][4] + `/download" text="` + allDataManuals[i][5] + `"/>
+                <input type="button" class="btn btn-primary" value="Скачать лекцию: ` + allDataManuals[i][5] + `">
+                </div>
+                <br>`;
+                inputManuals.innerHTML += htmlICode;
+            }
+        }
+<!--        Конец формирования лекций-->
+
+<!--        Начало формирования беседы-->
+        if(selectTypeMaterials == 1){
+            var selectEdType = document.getElementById('inputType').hidden = true;
+            var selectEdForm = document.getElementById('inputForm').hidden = true;
+            var selectEdTypeGame = document.getElementById('inputTypeGame').hidden = true;
+
+            var allResultDataTalkManuals = [];
+    <!--        Отсеиваем по одному критерии, через 2 проверки будут те беседы, которые подходят по фильтру-->
+
+            if(selectEducationArea != -1){
+                for (var i = 0; i < allDataTalkManuals.length; i++) {
+                    if(allDataTalkManuals[i][0] == selectEducationArea){
+                        allResultDataTalkManuals.push(allDataTalkManuals[i]);
+                    }
+                }
+                allDataTalkManuals = allResultDataTalkManuals;
+                allResultDataTalkManuals = [];
+            }
+
+            if(selectAgeGroup != -1){
+                for (var i = 0; i < allDataTalkManuals.length; i++) {
+                    if(allDataTalkManuals[i][1] == selectAgeGroup){
+                        allResultDataTalkManuals.push(allDataTalkManuals[i]);
+                    }
+                }
+                allDataTalkManuals = allResultDataTalkManuals;
+                allResultDataTalkManuals = [];
+            }
+
+            for(var i = 0; i < allDataTalkManuals.length; i++){
+                var inputManuals = document.getElementById('manuals');
+                var htmlICode = `<div class="col-sm-10">
+                <a href="/user/allTalkManuals/` + allDataTalkManuals[i][2] + `/download" text="` + allDataTalkManuals[i][3] + `"/>
+                <input type="button" class="btn btn-primary" value="Скачать беседу: ` + allDataTalkManuals[i][3] + `">
+                </div>
+                <br>`;
+                inputManuals.innerHTML += htmlICode;
+            }
+        }
+<!--        Конец формирования беседы-->
+
+<!--        Начало формирования игр-->
+        if(selectTypeMaterials == 2){
+            var selectEdType = document.getElementById('inputType').hidden = true;
+            var selectEdForm = document.getElementById('inputForm').hidden = true;
+
+            var selectEdTypeGame = document.getElementById('inputTypeGame').hidden = false;
+
+            var selectEdTypeGame = document.getElementById('inputTypeGame').value;
+
+<!--            alert(selectEdTypeGame);-->
+
+            var allResultDataGameManuals = [];
+    <!--        Отсеиваем по одному критерии, через 3 проверки будут те лекции, которые подходят по фильтру-->
+
+            if(selectEducationArea != -1){
+                for (var i = 0; i < allDataGameManuals.length; i++) {
+                    if(allDataGameManuals[i][0] == selectEducationArea){
+                        allResultDataGameManuals.push(allDataGameManuals[i]);
+                    }
+                }
+                allDataGameManuals = allResultDataGameManuals;
+                allResultDataGameManuals = [];
+            }
+
+            if(selectAgeGroup != -1){
+                for (var i = 0; i < allDataGameManuals.length; i++) {
+                    if(allDataGameManuals[i][1] == selectAgeGroup){
+                        allResultDataGameManuals.push(allDataGameManuals[i]);
+                    }
+                }
+                allDataGameManuals = allResultDataGameManuals;
+                allResultDataGameManuals = [];
+            }
+
+            if(selectEdTypeGame != -1){
+                for (var i = 0; i < allDataGameManuals.length; i++) {
+                    if(allDataGameManuals[i][2] == selectEdTypeGame){
+                        allResultDataGameManuals.push(allDataGameManuals[i]);
+                    }
+                }
+                allDataGameManuals = allResultDataGameManuals;
+                allResultDataGameManuals = [];
+            }
+
+
+            for(var i = 0; i < allDataGameManuals.length; i++){
+                var inputManuals = document.getElementById('manuals');
+                var htmlICode = `<div class="col-sm-10">
+                <a href="/user/allGameManuals/` + allDataGameManuals[i][3] + `/download" text="` + allDataGameManuals[i][4] + `"/>
+                <input type="button" class="btn btn-primary" value="Скачать игру: ` + allDataGameManuals[i][4] + `">
+                </div>
+                <br>`;
+                inputManuals.innerHTML += htmlICode;
+            }
+        }
+<!--        Конец формирования игр-->
+
+<!--        Начало формирования всех типов-->
+         if(selectTypeMaterials == -1){
+            var selectEdType = document.getElementById('inputType').hidden = true;
+            var selectEdForm = document.getElementById('inputForm').hidden = true;
+            var selectEdTypeGame = document.getElementById('inputTypeGame').hidden = true;
+
+<!--Лекции-->
+            var allResultDataManuals = [];
+    <!--        Отсеиваем по одному критерии, через 2 проверки будут те лекции, которые подходят по фильтру-->
+
+            if(selectEducationArea != -1){
+                for (var i = 0; i < allDataManuals.length; i++) {
+                    if(allDataManuals[i][0] == selectEducationArea){
+                        allResultDataManuals.push(allDataManuals[i]);
+                    }
+                }
+                allDataManuals = allResultDataManuals;
+                allResultDataManuals = [];
+            }
+
+            if(selectAgeGroup != -1){
+                for (var i = 0; i < allDataManuals.length; i++) {
+                    if(allDataManuals[i][1] == selectAgeGroup){
+                        allResultDataManuals.push(allDataManuals[i]);
+                    }
+                }
+                allDataManuals = allResultDataManuals;
+                allResultDataManuals = [];
+            }
+
+<!--Беседы-->
+            var allResultDataTalkManuals = [];
+    <!--        Отсеиваем по одному критерии, через 2 проверки будут те беседы, которые подходят по фильтру-->
+
+            if(selectEducationArea != -1){
+                for (var i = 0; i < allDataTalkManuals.length; i++) {
+                    if(allDataTalkManuals[i][0] == selectEducationArea){
+                        allResultDataTalkManuals.push(allDataTalkManuals[i]);
+                    }
+                }
+                allDataTalkManuals = allResultDataTalkManuals;
+                allResultDataTalkManuals = [];
+            }
+
+            if(selectAgeGroup != -1){
+                for (var i = 0; i < allDataTalkManuals.length; i++) {
+                    if(allDataTalkManuals[i][1] == selectAgeGroup){
+                        allResultDataTalkManuals.push(allDataTalkManuals[i]);
+                    }
+                }
+                allDataTalkManuals = allResultDataTalkManuals;
+                allResultDataTalkManuals = [];
+            }
+
+<!--Игры-->
+            var allResultDataGameManuals = [];
+    <!--        Отсеиваем по одному критерии, через 3 проверки будут те лекции, которые подходят по фильтру-->
+
+            if(selectEducationArea != -1){
+                for (var i = 0; i < allDataGameManuals.length; i++) {
+                    if(allDataGameManuals[i][0] == selectEducationArea){
+                        allResultDataGameManuals.push(allDataGameManuals[i]);
+                    }
+                }
+                allDataGameManuals = allResultDataGameManuals;
+                allResultDataGameManuals = [];
+            }
+
+            if(selectAgeGroup != -1){
+                for (var i = 0; i < allDataGameManuals.length; i++) {
+                    if(allDataGameManuals[i][1] == selectAgeGroup){
+                        allResultDataGameManuals.push(allDataGameManuals[i]);
+                    }
+                }
+                allDataGameManuals = allResultDataGameManuals;
+                allResultDataGameManuals = [];
+            }
+
+
+            for(var i = 0; i < allDataGameManuals.length; i++){
+                var inputManuals = document.getElementById('manuals');
+                var htmlICode = `<div class="col-sm-10">
+                <a href="/user/allGameManuals/` + allDataGameManuals[i][3] + `/download" text="` + allDataGameManuals[i][4] + `"/>
+                <input type="button" class="btn btn-primary" value="Скачать игру: ` + allDataGameManuals[i][4] + `">
+                </div>
+                <br>`;
+                inputManuals.innerHTML += htmlICode;
+            }
+
+
+            for(var i = 0; i < allDataTalkManuals.length; i++){
+                var inputManuals = document.getElementById('manuals');
+                var htmlICode = `<div class="col-sm-10">
+                <a href="/user/allTalkManuals/` + allDataTalkManuals[i][2] + `/download" text="` + allDataTalkManuals[i][3] + `"/>
+                <input type="button" class="btn btn-primary" value="Скачать беседу: ` + allDataTalkManuals[i][3] + `">
+                </div>
+                <br>`;
+                inputManuals.innerHTML += htmlICode;
+            }
+
+
+            for(var i = 0; i < allDataManuals.length; i++){
+                var inputManuals = document.getElementById('manuals');
+                var htmlICode = `<div class="col-sm-10">
+                <a href="/user/allManuals/` + allDataManuals[i][4] + `/download" text="` + allDataManuals[i][5] + `"/>
+                <input type="button" class="btn btn-primary" value="Скачать лекцию: ` + allDataManuals[i][5] + `">
+                </div>
+                <br>`;
+                inputManuals.innerHTML += htmlICode;
+            }
+        }
+<!--        Конец формирования всех типов-->
+
+
+    }
+</script>
+</body>
+</html>
+
+

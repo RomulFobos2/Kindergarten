@@ -1,0 +1,81 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Изменить направление развития</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha1/css/bootstrap.min.css">
+</head>
+<body>
+<header th:insert="blocks/header :: header"></header>
+<div class="container-sm">
+    <h1>Изменение направления развития</h1>
+    <form method="post" class="row g-3">
+        <p class="fs-6 text-danger" th:text="${educationDirectionNameError}"></p>
+        <div class="col-sm-4">
+            <input type="text" class="form-control" name="inputEducationDirectionName" id="inputEducationDirectionName"
+                   required th:value="${educationDirection.name}"
+                   placeholder="Название направления развития">
+        </div>
+        <div class="col-sm-4">
+            <select class="form-select" name="inputEducationArea" id="inputEducationArea" required>
+                <option disabled value="">Выберите образовательную область</option>
+                <option selected th:value="${educationDirection.educationArea.id}" th:text="${educationDirection.educationArea.name}"></option>
+                <option th:each="el : ${allEducationAreas}" th:value="${el.id}"
+                        th:text="${el.name}"></option>
+            </select>
+        </div>
+        <div class="col-sm-4">
+            <select class="form-select" name="inputAgeGroup" id="inputAgeGroup" required>
+                <option disabled value="">Выберите возрастную группу</option>
+                <option selected th:value="${educationDirection.ageGroup.id}" th:text="${educationDirection.ageGroup.name}"></option>
+                <option th:each="el : ${allAgeGroups}" th:value="${el.id}"
+                        th:text="${el.name}"></option>
+            </select>
+        </div>
+        <div class="row g-3">
+            <div class="col-sm-12 alert alert-success">
+                <h5 class="alert-heading">Показатели развития</h5>
+                <div class="col-sm-12" name="formEducationIndicator" id="formEducationIndicator">
+                    <div th:each="el, index : ${educationDirection.educationIndicators}">
+                    <input type="text" class="form-control" name="inputEducationIndicator"
+                           th:id="${'inputEducationIndicator_' + (index.index+1)}" required
+                           th:value="${el.question}" placeholder="Показатель развития"><br>
+                    </div>
+                </div>
+                <br>
+                <input type="button" class="btn btn-dark" value="+" onclick="addField()">
+                <input type="button" class="btn btn-danger" value="-" onclick="deleteField()">
+            </div>
+        </div>
+        <div class="col-12">
+            <button type="submit" class="btn btn-primary">Редактировать</button>
+            <a th:href="'/manager/allEducationDirections/educationDirection-details/' + ${educationDirection.id}" class="btn btn-secondary my-2">Вернуться</a>
+        </div>
+    </form>
+</div>
+<div th:insert="blocks/footer :: footer"></div>
+<script th:inline="javascript">
+    var countField = /*[[${educationDirection.educationIndicators.size}]]*/;
+
+    function addField(){
+        countField = countField + 1;
+        var inputForQuestion = document.getElementById('formEducationIndicator');
+        var htmlInput = `<input type="text" class="form-control" name="inputEducationIndicator" id="inputEducationIndicator_` + countField + `" required
+                           placeholder="Показатель развития"><br>`;
+        inputForQuestion.innerHTML += htmlInput;
+    }
+
+    function deleteField(){
+        if(countField > 1){
+            var inputForQuestion = document.getElementById('inputEducationIndicator_' + countField);
+            inputForQuestion.parentNode.removeChild(inputForQuestion);
+            countField = countField - 1;
+            var elements = document.getElementById('formEducationIndicator').getElementsByTagName("br");
+            elements[elements.length-1].parentNode.removeChild(elements[elements.length-1]);
+        }
+    }
+</script>
+</body>
+</html>
+
+

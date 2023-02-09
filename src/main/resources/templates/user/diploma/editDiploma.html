@@ -1,0 +1,126 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Редактирование диплома</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha1/css/bootstrap.min.css">
+
+    <style>
+html,
+body {
+  height: 100%;
+}
+
+body {
+  display: flex;
+  align-items: center;
+  padding-top: 40px;
+  padding-bottom: 40px;
+  background-color: #f5f5f5;
+}
+
+.form-signin {
+  width: 100%;
+  max-width: 430px;
+  padding: 15px;
+  margin: auto;
+}
+.form-signin .checkbox {
+  font-weight: 400;
+}
+.form-signin .form-control {
+  position: relative;
+  box-sizing: border-box;
+  height: auto;
+  padding: 10px;
+  font-size: 14px;
+}
+.form-signin .form-control:focus {
+  z-index: 2;
+}
+.form-signin input[type="email"] {
+  margin-bottom: -1px;
+  border-bottom-right-radius: 0;
+  border-bottom-left-radius: 0;
+}
+.form-signin input[type="text"] {
+  margin-bottom: -1px;
+  border-bottom-right-radius: 0;
+  border-bottom-left-radius: 0;
+}
+.form-signin input[type="password"] {
+  margin-bottom: -1px;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+}
+.form-signin button[type="submit"] {
+  margin-bottom: 10px;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+}
+.form-signin a{
+
+    font-size: 28px;
+}
+    </style>
+
+</head>
+<body class="text-center">
+<main class="form-signin">
+    <div class="container mt-5 mb-5">
+        <form method="post" enctype="multipart/form-data">
+            <img class="mb-4" src="https://getbootstrap.com/docs/5.0/assets/brand/bootstrap-logo.svg" alt="" width="72"
+                 height="57">
+            <h1 class="h3 mb-3 fw-normal">Редактирование диплома</h1>
+            <div class="row g-3">
+                <div class="col-sm-6">
+                    <input type="text" class="form-control" name="inputLastName" id="inputLastName" th:value="${diploma.lastName}" required placeholder="Фамилия">
+                </div>
+                <div class="col-sm-6">
+                    <input type="text" class="form-control" name="inputFirstName" id="inputFirstName" th:value="${diploma.firstName}" required placeholder="Имя">
+                </div>
+                <div class="col-sm-12">
+                    <input type="text" class="form-control" name="inputPatronymicName" id="inputPatronymicName" th:value="${diploma.patronymicName}" placeholder="Отчество (необязательно)">
+                </div>
+                <div class="col-sm-12">
+                    <textarea class="form-control" name="inputDiplomaText" id="inputDiplomaText" maxlength="10000" wrap="soft" rows="3"
+                              required placeholder="Название конкурса/номинации" th:text="${diploma.text}"></textarea>
+                </div>
+                <div class="col-sm-6">
+                    <input type="date" name="strDate" id="strDate" class="form-control" placeholder="Дата выдачи"
+                           th:max="${#dates.format(#dates.createNow(), 'yyyy-MM-dd')}" th:value="${#dates.format(diploma.date, 'yyyy-MM-dd')}" required>
+                </div>
+                <div class="col-sm-6">
+                    <input type="text" name="place" id="place" class="form-control" th:value="${diploma.place}" placeholder="Место (необязательно)">
+                </div>
+                <div class="col-sm-8">
+                    <input type="text" class="form-control" name="inputFileText" id="inputFileText" th:value="${diploma.fileName}" placeholder="Загрузите файл..." disabled>
+                    <input type="file" class="form-control" name="inputFileField" id="inputFileField" hidden onchange="mySelectFile()" accept="image/*">
+                </div>
+                <div class="col-sm-4">
+                    <input type="button" class="form-control btn btn-outline-primary" onclick="myClick()" value="Заменить файл">
+                </div>
+            </div><br>
+            <button type="submit" class="w-100 btn btn-lg btn-primary">Редактировать</button>
+            <a class="p-2 text-dark" th:href="'/user/allDiplomas'">Вернуться</a>
+            <p class="mt-5 mb-3 text-muted">&copy;2022</p>
+        </form>
+    </div>
+</main>
+</body>
+<script th:inline="javascript">
+            function myClick(){
+	            var btn = document.getElementById("inputFileField");
+	            btn.click();
+	        }
+
+            function mySelectFile(){
+	            var selectedFile = document.getElementById("inputFileField").files[0];
+	            var txt = document.getElementById("inputFileText");
+	            txt.value = "Загружен файл: " + selectedFile.name;
+	        }
+
+</script>
+</body>
+</html>
+

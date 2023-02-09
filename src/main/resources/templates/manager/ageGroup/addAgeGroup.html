@@ -1,0 +1,112 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Добавить возрастную группу</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha1/css/bootstrap.min.css">
+
+    <style>
+html,
+body {
+  height: 100%;
+}
+
+body {
+  display: flex;
+  align-items: center;
+  padding-top: 40px;
+  padding-bottom: 40px;
+  background-color: #f5f5f5;
+}
+
+.form-signin {
+  width: 100%;
+  max-width: 430px;
+  padding: 15px;
+  margin: auto;
+}
+.form-signin .checkbox {
+  font-weight: 400;
+}
+.form-signin .form-control {
+  position: relative;
+  box-sizing: border-box;
+  height: auto;
+  padding: 10px;
+  font-size: 14px;
+}
+.form-signin .form-control:focus {
+  z-index: 2;
+}
+.form-signin input[type="email"] {
+  margin-bottom: -1px;
+  border-bottom-right-radius: 0;
+  border-bottom-left-radius: 0;
+}
+.form-signin input[type="text"] {
+  margin-bottom: -1px;
+  border-bottom-right-radius: 0;
+  border-bottom-left-radius: 0;
+}
+.form-signin input[type="password"] {
+  margin-bottom: -1px;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+}
+.form-signin button[type="submit"] {
+  margin-bottom: 10px;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+}
+.form-signin a{
+
+    font-size: 28px;
+}
+    </style>
+
+</head>
+<body class="text-center">
+<main class="form-signin">
+    <div class="container mt-5 mb-5">
+        <form action="/manager/addAgeGroup" method="post">
+            <img class="mb-4" src="https://getbootstrap.com/docs/5.0/assets/brand/bootstrap-logo.svg" alt="" width="72"
+                 height="57">
+            <h1 class="h3 mb-3 fw-normal">Добавление возрастной группы</h1>
+            <p class="fs-6 text-danger" th:text="${ageGroupNameError}"></p>
+            <div class="row g-3">
+                <div class="col-sm-12">
+                    <input type="text" class="form-control" name="inputAgeGroupName" id="inputAgeGroupName" required placeholder="Название возрастной группы">
+                </div>
+                <div class="col-sm-12">
+                    <select class="form-select" name="inputAgeGroup" id="inputAgeGroup" required>
+                        <option selected disabled value="">Выберите возрастную группу</option>
+                        <option value="0">от 1 года до 2 лет</option>
+                        <option value="1">от 2 лет до 3 лет</option>
+                        <option value="2">от 3 лет до 4 лет</option>
+                        <option value="3">от 4 лет до 5 лет</option>
+                        <option value="4">от 5 лет до 6 лет</option>
+                    </select>
+                </div>
+                <div class="col-sm-12">
+                    <input type="number" class="form-control" name="inputDurationLesson" id="inputDurationLesson"
+                           placeholder="Продолжительность занятия, мин"
+                           title="Только цифры" pattern="\d+00|\d*[0,5]" min="10" max="30" step="5"
+                           required>
+                </div>
+                <div class="col-sm-12">
+                    <input type="number" class="form-control" name="inputMaxDurationLessons" id="inputMaxDurationLessons"
+                           placeholder="Дневная суммарная нагрузка, мин"
+                           title="Только цифры" pattern="\d+00|\d*[0,5]" min="20" max="90" step="5"
+                           required>
+                </div>
+            </div><br>
+            <button type="submit" class="w-100 btn btn-lg btn-primary">Добавить</button>
+            <a class="p-2 text-dark" th:href="'/manager/allAgeGroups'">Вернуться</a>
+            <p class="mt-5 mb-3 text-muted">&copy;2022</p>
+        </form>
+    </div>
+</main>
+</body>
+</body>
+</html>
+

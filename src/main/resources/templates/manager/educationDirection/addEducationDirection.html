@@ -1,0 +1,224 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Добавить направление развития</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha1/css/bootstrap.min.css">
+</head>
+<body>
+<header th:insert="blocks/header :: header"></header>
+<div class="container-sm">
+    <h1>Добавление направления развития</h1>
+    <form action="/manager/addEducationDirection" method="post" class="row g-3">
+        <p class="fs-6 text-danger" th:text="${educationDirectionNameError}"></p>
+        <div class="col-sm-4">
+            <input type="text" class="form-control" name="inputEducationDirectionName" id="inputEducationDirectionName"
+                   required
+                   placeholder="Название направления развития">
+        </div>
+        <div class="col-sm-4">
+            <select class="form-select" name="inputEducationArea" id="inputEducationArea" required
+                    onchange="touchSelect()">
+                <option selected disabled value="-1">Выберите образовательную область</option>
+                <option th:each="el : ${allEducationAreas}" th:value="${el.id}"
+                        th:text="${el.name}"></option>
+            </select>
+        </div>
+        <div class="col-sm-4">
+            <select class="form-select" name="inputAgeGroup" id="inputAgeGroup" required onchange="touchSelect()">
+                <option selected disabled value="-1">Выберите возрастную группу</option>
+                <option th:each="el : ${allAgeGroups}" th:value="${el.id}"
+                        th:text="${el.name}"></option>
+            </select>
+        </div>
+        <hr>
+        <div class="col-sm-2">
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" value="true" name="inputHaveLesson" id="inputHaveLesson"
+                       onchange="lesson()">
+                <label class="form-check-label" for="inputHaveLesson">
+                    Вкл. в расписание
+                </label>
+            </div>
+        </div>
+        <div class="col-sm-3">
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" value="true" name="inputIsHard" id="inputIsHard"
+                       onchange="chooseIsHard()" disabled>
+                <label class="form-check-label" for="inputIsHard">
+                    Занятие повышенной сложности
+                </label>
+            </div>
+        </div>
+        <div class="col-sm-2">
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" value="true" name="inputIsActivity" id="inputIsActivity"
+                       onchange="chooseIsActivity()" disabled>
+                <label class="form-check-label" for="inputIsActivity">
+                    Подвижное занятие
+                </label>
+            </div>
+        </div>
+
+        <div class="col-sm-2">
+            <!--Для переноса следующего инпута на новую стркоку-->
+        </div>
+        <div class="col-sm-2">
+            <!--Для переноса следующего инпута на новую стркоку-->
+        </div>
+
+        <div class="col-sm-3">
+            <select class="form-select" name="inputCountLesson" id="inputCountLesson" disabled required>
+                <option selected disabled value="">Переодичность занятий в неделю</option>
+                <option value="1">1 раз в неделю</option>
+                <option value="2">2 раза в неделю</option>
+                <option value="3">3 раза в неделю</option>
+            </select>
+        </div>
+
+        <div class="col-sm-3">
+            <select class="form-select" name="inputTotalCountLesson" id="inputTotalCountLesson" disabled>
+                <option selected disabled value="">Общее кол-во уроков с:</option>
+                <option th:each="el : ${allEducationDirections}" th:value="${el.id}"
+                        th:text="${el.name}"></option>
+            </select>
+        </div>
+        <hr>
+        <div class="row g-3">
+            <div class="col-sm-12 alert alert-success">
+                <h5 class="alert-heading">Показатели развития</h5>
+                <div class="col-sm-12" name="formEducationIndicator" id="formEducationIndicator">
+                    <div id="div1">
+                        <input type="text" class="form-control" name="inputEducationIndicator" id="inputEducationIndicator_1" required
+                               placeholder="Показатель развития"><br>
+                        <div id="div2"></div>
+                    </div>
+                </div>
+                <br>
+                <input type="button" class="btn btn-dark" value="+" onclick="addField()">
+                <input type="button" class="btn btn-danger" value="-" onclick="deleteField()">
+            </div>
+        </div>
+        <div class="col-12">
+            <button type="submit" class="btn btn-primary">Добавить</button>
+            <a th:href="'/manager/allEducationDirections'" class="btn btn-secondary my-2">Вернуться</a>
+        </div>
+    </form>
+</div>
+<div th:insert="blocks/footer :: footer"></div>
+<script th:inline="javascript">
+    var countField = 1;
+
+    function addField(){
+        countField = countField + 1;
+        var htmlInput = `<input type="text" class="form-control" name="inputEducationIndicator" id="inputEducationIndicator_` + countField + `" required
+                           placeholder="Показатель развития"><br><div id="div`+ (countField+1) + `"></div>`;
+        var inputForQuestion = document.getElementById('div' + countField).innerHTML = htmlInput;
+    }
+
+
+    function deleteField(){
+        if(countField > 1){
+            var inputForQuestion = document.getElementById('div' + countField);
+            inputForQuestion.parentNode.removeChild(inputForQuestion);
+            countField = countField - 1;
+
+            var htmlInput = `<div id="div`+ (countField+1) + `"></div>`;
+
+            var strFromInput = document.getElementById('inputEducationIndicator_' + countField).value;
+
+
+            var inputForQuestion = document.getElementById('div' + countField).innerHTML += htmlInput;
+
+            document.getElementById('inputEducationIndicator_' + countField).value = strFromInput;
+<!--            var elements = document.getElementById('formEducationIndicator').getElementsByTagName("br");-->
+<!--            elements[elements.length-1].parentNode.removeChild(elements[elements.length-1]);-->
+        }
+    }
+
+    function lesson(){
+        var checkLesson = document.getElementById('inputHaveLesson').checked;
+        if(checkLesson == true){
+            document.getElementById('inputIsHard').disabled = false;
+            document.getElementById('inputIsActivity').disabled = false;
+            document.getElementById('inputCountLesson').disabled = false;
+        }
+        else{
+            document.getElementById('inputIsHard').checked = false;
+            document.getElementById('inputIsHard').disabled = true;
+            document.getElementById('inputIsActivity').checked = false;
+            document.getElementById('inputIsActivity').disabled = true;
+
+            document.getElementById('inputCountLesson').value = "";
+            document.getElementById('inputCountLesson').disabled = true;
+            document.getElementById('inputTotalCountLesson').value = "";
+            document.getElementById('inputTotalCountLesson').disabled = true;
+        }
+    }
+
+    function chooseIsHard(){
+        if(document.getElementById('inputIsHard').checked){
+            document.getElementById('inputIsActivity').checked = false;
+        }
+    }
+
+    function chooseIsActivity(){
+        if(document.getElementById('inputIsActivity').checked){
+            document.getElementById('inputIsHard').checked = false;
+        }
+    }
+
+    function touchSelect(){
+<!--        allEducationDirections-->
+<!--        inputTotalCountLesson-->
+
+        var selectEducationArea = document.getElementById('inputEducationArea').value;
+        var selectAgeGroup = document.getElementById('inputAgeGroup').value;
+
+        if(selectEducationArea != -1 & selectAgeGroup != -1){
+            document.getElementById('inputTotalCountLesson').disabled = false;
+        }
+
+        <!--        Формируем массив со всеми направлениями-->
+        var allEducationDirections = [];
+        /*[# th:each="educationDirection : ${allEducationDirections}"]*/
+        var var_arr = [];
+        var_arr.push(/*[[${educationDirection.id}]]*/, /*[[${educationDirection.name}]]*/, /*[[${educationDirection.educationArea.id}]]*/, /*[[${educationDirection.ageGroup.id}]]*/,);
+        allEducationDirections.push(var_arr);
+        /*[/]*/
+
+
+        var allResultEducationDirections = [];
+
+        if(selectEducationArea != -1){
+            for (var i = 0; i < allEducationDirections.length; i++) {
+                if(allEducationDirections[i][2] == selectEducationArea){
+                    allResultEducationDirections.push(allEducationDirections[i]);
+                }
+            }
+                allEducationDirections = allResultEducationDirections;
+                allResultEducationDirections = [];
+        }
+
+        if(selectAgeGroup != -1){
+            for (var i = 0; i < allEducationDirections.length; i++) {
+                if(allEducationDirections[i][3] == selectAgeGroup){
+                    allResultEducationDirections.push(allEducationDirections[i]);
+                }
+            }
+                allEducationDirections = allResultEducationDirections;
+                allResultEducationDirections = [];
+        }
+
+        document.getElementById('inputTotalCountLesson').options.length = 1;
+        for (var i = 0; i < allEducationDirections.length; i++) {
+            let newOption = new Option(allEducationDirections[i][1], allEducationDirections[i][0]);
+            document.getElementById('inputTotalCountLesson').append(newOption);
+        }
+    }
+
+</script>
+</body>
+</html>
+
+

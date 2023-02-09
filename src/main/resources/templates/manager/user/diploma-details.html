@@ -1,0 +1,92 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Детальнее</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha1/css/bootstrap.min.css">
+    <style>
+        .blue{
+            background-color: #4682B4
+        }
+        {
+   box-sizing: border-box;
+}
+.image-wrapper {
+   position: relative;
+   max-width: 600px;
+   margin: 50px auto;
+   padding: 15px;
+   background: #DAEBE8;
+}
+.image-inner {
+   position: relative;
+}
+.image-wrapper img {
+   display: block;
+   width: 100%;
+}
+.image-wrapper:before, .image-wrapper:after, .image-inner:before, .image-inner:after {
+   content: "";
+   position: absolute;
+   width: 50px;
+   height: 50px;
+}
+.image-wrapper:before {
+   bottom: 0;
+   left: 0;
+   border-left: 6px double #384D26;
+   border-bottom: 6px double #384D26;
+}
+.image-wrapper:after {
+   right: 0;
+   top: 0;
+   border-right: 6px double #384D26;
+   border-top: 6px double #384D26;
+}
+.image-inner:before {
+   bottom: -15px;
+   right: -15px;
+   border-right: 6px double #384D26;
+   border-bottom: 6px double #384D26;
+}
+.image-inner:after {
+   top: -15px;
+   left: -15px;
+   border-left: 6px double #384D26;
+   border-top: 6px double #384D26;
+}
+
+    </style>
+</head>
+<body>
+<header th:insert="blocks/header :: header"></header>
+
+<div class="container mt-5" th:each="el : ${diploma}">
+    <div class="alert alert-info mt-2">
+        <h1 th:text="${el.text}"/>
+        <a th:if="${diploma.child == null}" th:text="${'Кому выдан: ' + el.lastName + ' ' + el.firstName + ' ' + el.patronymicName}"/>
+        <a th:if="${diploma.child != null}" th:text="${'Кому выдан: ' + el.child.fullName + ' (воспитаник)'}"/>
+        <br>
+        <a th:if="${diploma.child != null}" th:text="${'Педагог: ' + el.lastName + ' ' + el.firstName + ' ' + el.patronymicName}"/>
+        <br>
+        <a th:text="${'Когда выдан: ' + el.date}"/>
+        <br>
+        <a th:if="${el.place} != ''" th:text="${'Место: ' + el.place}"/>
+    </div>
+    <div class="d-flex justify-content-start flex-wrap">
+        <form class="form-row">
+            <a th:href="'/manager/allUsers/user-details/' + ${user.id} + '/allDiplomas'" class="btn btn-secondary mx-auto">Назад</a>
+            <a th:href="'/manager/allUsers/user-details/' + ${user.id} + '/allDiplomas/diploma-details/' + ${el.id} +'/download'" class="btn btn-success">
+                Скачать диплом</a>
+        </form>
+    </div>
+    <div class="image-wrapper">
+        <div class="image-inner">
+            <img th:src="'data:image/jpeg;base64,'+ ${image}" class="rounded">
+        </div>
+    </div>
+</div>
+<!--<img  th:src="'data:image/jpeg;base64,'+ ${image}" />-->
+<div th:insert="blocks/footer :: footer"></div>
+</body>
+</html>

@@ -1,0 +1,28 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Детальнее</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha1/css/bootstrap.min.css">
+</head>
+<body>
+<header th:insert="blocks/header :: header"></header>
+
+<div class="container mt-5" th:each="el : ${cabinet}">
+    <div class="alert alert-info mt-2">
+        <h1 th:text="${'№' + el.number}"/>
+        <a th:if="${el.busy}" th:text="'Кабинет занят группой: ' + ${group.groupName}"/>
+        <a th:if="${!el.busy}" th:text="'Кабинет свободен'"/>
+    </div>
+    <div class="d-flex justify-content-start flex-wrap">
+        <form class="form-row">
+            <a th:href="'/manager/allCabinets'" class="btn btn-secondary mx-auto">Назад</a>
+        </form>
+        <form th:action="'/manager/allCabinets/cabinet-details/' + ${el.id} +'/remove'" method="post">
+            <button class="btn btn-danger mx-1" type="submit">Удалить</button>
+        </form>
+    </div>
+</div>
+<div th:insert="blocks/footer :: footer"></div>
+</body>
+</html>

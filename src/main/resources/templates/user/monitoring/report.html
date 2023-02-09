@@ -1,0 +1,93 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Педагогический мониторинг</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha1/css/bootstrap.min.css">
+</head>
+<body>
+<header th:insert="blocks/header :: header"></header>
+<div class="container-sm">
+    <h1 th:text="${'Проведение мониторинга по области: ' + educationArea.name}"></h1>
+    <form method="post" class="row g-3" >
+        <div th:each="educationDirection, index : ${allEducationDirections}">
+        <a th:text="${educationDirection.name}"/>
+            <table class="table table-bordered" name="myTab" th:id="${'myTab_' + (index.index+1)}">
+            <tbody>
+            <tr>
+                <td>ФИО Ребенка</td>
+                <td th:each="question : ${educationDirection.getEducationIndicators()}" th:text="${question.question}"></td>
+                <td>Средняя оценка</td>
+            </tr>
+            <tr th:each="child, index : ${allChildren}">
+                <td th:text="${index.index + 1 + '. ' + child.fullName}"></td>
+                <td th:each="question : ${educationDirection.getEducationIndicators()}">
+<!--                    <input type="text" name="inputRating" class="form-control" th:value="${index.index}" >-->
+                    <select class="form-select" id="select" name="inputRating" onchange="calculateMiddleRating()" required>
+                        <option selected value="0">0</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                    </select>
+                </td>
+                <td>
+                    <input type="text" name="middleRating" class="form-control" disabled>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+        </div>
+        <div>
+            <div class="form-check">
+                <input class="form-check-input" type="radio" name="isStartYear" id="isStartYear_1" value="true" checked>
+                <label class="form-check-label" for="isStartYear_1">
+                    На начало учебного года
+                </label>
+            </div>
+            <div class="form-check">
+                <input class="form-check-input" type="radio" name="isStartYear" id="isStartYear_2" value="false">
+                <label class="form-check-label" for="isStartYear_2">
+                    На конец учебного года
+                </label>
+            </div>
+
+        </div>
+        <div class="col-12">
+            <button type="submit" class="btn btn-primary" >Сформировать отчет</button>
+            <a th:href="'/user/allEducationAreas/'" class="btn btn-secondary my-2">Вернуться</a>
+        </div>
+    </form>
+</div>
+<div th:insert="blocks/footer :: footer"></div>
+<script th:inline="javascript">
+        document.addEventListener("DOMContentLoaded", function() {
+           calculateMiddleRating();
+        });
+
+
+        function calculateMiddleRating(){
+        var tables = document.getElementsByTagName("table");
+        for (var t = 0; t < tables.length; t++ ){
+            for (var i = 0, row; row = tables[t].rows[i]; i++) {
+<!--            console.log("Кол-во столбцов: " + row.cells.length);-->
+            if(i > 0){
+            var summa = 0;
+<!--                 for (var j = 0, col; col = row.cells[j]; j++) { Для потомков)-->
+                 for (var j = 1; j < row.cells.length-1; j++) {
+                    var col = row.cells[j];
+                    summa += Number(col.getElementsByTagName("select")[0].value);
+                }
+                summa = summa / (row.cells.length-2);
+                summa = summa.toFixed(2)
+                row.cells[row.cells.length-1].getElementsByTagName("input")[0].value = summa;
+            }
+
+            }
+        }
+    }
+
+</script>
+</body>
+</html>
+
+

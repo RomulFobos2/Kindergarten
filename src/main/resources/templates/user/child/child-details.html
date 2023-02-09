@@ -1,0 +1,99 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Детальнее</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha1/css/bootstrap.min.css">
+</head>
+<body>
+<header th:insert="blocks/header :: header"></header>
+
+<div class="container mt-5">
+    <div class="row g-3">
+        <div class="alert alert-info mt-2">
+            <h1 th:text="${child.fullName}"/>
+            <a th:text="${'Полных лет: ' + child.age}"></a>
+        </div>
+
+
+        <a class="alert-heading" href="#hidden1" onclick="view('hidden1'); return false">Сведения о
+            развитии(Раскрыть/Скрыть)</a>
+        <div class="col-sm-12 alert alert-secondary text-center" id="hidden1" style="display: none;">
+            <h5 class="alert-heading">Сведения о развитии</h5>
+            <table class="table table-primary table-bordered text-center table-hover" name="myTab"
+                   th:each="edArea : ${allEducationAreas}">
+                <tbody>
+                <tr>
+                    <td colspan="6" th:text="'Образовательная область: ' + ${edArea.name}"></td>
+                </tr>
+                <tr>
+                    <td>Дата</td>
+                    <td>Воспитатель поставивший оценку</td>
+                    <td>Направления развития</td>
+                    <td>Вопрос</td>
+                    <td>Оценка</td>
+                    <td>Период</td>
+                </tr>
+                <tr th:each="resultMonitoring, index : ${child.resultMonitors}"
+                    th:if="${resultMonitoring.educationDirection.educationArea.id} == ${edArea.id}">
+                    <td th:text="${#dates.format(resultMonitoring.date, 'dd.MM.yyyy')}"></td>
+                    <td th:text="${resultMonitoring.user.fullName}"></td>
+                    <td th:text="${resultMonitoring.educationDirection.name}"></td>
+                    <td th:text="${resultMonitoring.question}"></td>
+                    <td th:if="${resultMonitoring.rating == 0}" th:text="'Отсутствовал'"></td>
+                    <td th:if="${resultMonitoring.rating != 0}" th:text="${resultMonitoring.rating}"></td>
+                    <td th:if="${resultMonitoring.isStarEducationYear}" th:text="'Начало года'"></td>
+                    <td th:if="${!resultMonitoring.isStarEducationYear}" th:text="'Конец года'"></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <a class="alert-heading" href="#hidden2" onclick="view('hidden2'); return false">Сведения о
+            дипломах/грамотах(Раскрыть/Скрыть)</a>
+        <div class="col-sm-12 alert alert-secondary text-center" id="hidden2" style="display: none;">
+            <h5 class="alert-heading">Сведения о дипломах/грамотах</h5>
+            <table class="table table-primary table-bordered text-center table-hover" name="myTab">
+                <tbody>
+                <tr>
+                    <td>ФИО педагога</td>
+                    <td>Конкурс</td>
+                    <td>Место</td>
+                    <td>Дата</td>
+                    <td>Скачать</td>
+                </tr>
+                <tr th:each="diploma, index : ${allDiplomas}">
+                    <td th:text="${diploma.lastName + ' ' + diploma.firstName + ' ' + diploma.patronymicName}"></td>
+                    <td th:text="${diploma.text}"></td>
+                    <td th:if="${diploma.place == null}" th:text="'--'"></td>
+                    <td th:if="${diploma.place != null}" th:text="${diploma.place}"></td>
+                    <td th:text="${#dates.format(diploma.date, 'dd.MM.yyyy')}"></td>
+                    <td><a th:href="'/user/allDiplomas/diploma-details/' + ${diploma.id} + '/download'" th:text="'Скачать диплом'"></a></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+
+
+        <div class="d-flex justify-content-start flex-wrap">
+            <form class="form-row">
+                <a th:href="'/user/allChildren'" class="btn btn-secondary mx-auto">Назад</a>
+                <a th:href="'/user/editChild/' + ${child.id}" class="btn btn-warning">Редактировать</a>
+                <a th:href="'/user/allChildren/' + ${child.id} + '/report'" class="btn btn-primary">Скачать портфолио</a>
+            </form>
+            <form th:action="'/user/allChildren/child-details/' + ${child.id} +'/remove'" method="post">
+                <button class="btn btn-danger mx-1" type="submit">Удалить</button>
+            </form>
+        </div>
+    </div>
+</div>
+<div th:insert="blocks/footer :: footer"></div>
+<script th:inline="javascript">
+    function view(n) {
+        style = document.getElementById(n).style;
+        style.display = (style.display == 'block') ? 'none' : 'block';
+    }
+</script>
+</body>
+</html>

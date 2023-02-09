@@ -1,0 +1,31 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Детальнее</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha1/css/bootstrap.min.css">
+</head>
+<body>
+<header th:insert="blocks/header :: header"></header>
+
+<div class="container mt-5" th:each="el : ${user}">
+    <div class="alert alert-info mt-2">
+        <h1 th:text="${el.lastName + ' ' + el.firstName + ' ' + el.patronymicName}"/>
+        <a th:text="${'Адрес почты - ' + el.username}"/>
+        <br>
+        <a th:if="${el.group} != null" th:href="'/manager/allGroups/group-details/' + ${el.group.id}" th:text="${'Воспитатель группы - ' + el.group.groupName}"/>
+    </div>
+    <div class="d-flex justify-content-start flex-wrap">
+        <form class="form-row">
+            <a th:href="'/manager/allUsers'" class="btn btn-secondary mx-auto">Назад</a>
+            <a th:href="'/manager/editUser/' + ${el.id}" class="btn btn-warning">Редактировать</a>
+            <a th:href="'/manager/allUsers/user-details/' + ${el.id} + '/allDiplomas'" class="btn btn-success">Дипломы и грамоты</a>
+        </form>
+        <form th:action="'/manager/allUsers/user-details/' + ${el.id} +'/remove'" method="post">
+            <button class="btn btn-danger mx-1" type="submit">Удалить</button>
+        </form>
+    </div>
+</div>
+<div th:insert="blocks/footer :: footer"></div>
+</body>
+</html>

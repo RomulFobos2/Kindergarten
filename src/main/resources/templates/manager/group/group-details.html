@@ -1,0 +1,161 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Детальнее</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha1/css/bootstrap.min.css">
+</head>
+<body>
+<header th:insert="blocks/header :: header"></header>
+
+<div class="container mt-5" th:each="el : ${group}">
+    <div class="alert alert-info mt-2">
+        <h1 th:text="${el.groupName}"/>
+        <div class="row" th:each="user : ${el.users}">
+            <div class="col-sm-10">
+                </a><a th:href="'/manager/allUsers/user-details/' + ${user.id}"
+                       th:text="${'Воспитатель: ' + user.lastName + ' ' + user.firstName + ' ' + user.patronymicName}"/>
+            </div>
+        </div>
+        </a><a th:text="${'Возрастная группа: ' + el.ageGroup.name}"/>
+        <br>
+        </a><a th:text="${'Номер кабинета: ' + el.cabinet.number}"/>
+
+    </div>
+    <div class="d-flex justify-content-start flex-wrap">
+        <form class="form-row">
+            <a th:href="'/manager/allGroups'" class="btn btn-secondary mx-auto">Назад</a>
+            <a th:href="'/manager/editGroup/' + ${el.id}" class="btn btn-warning">Редактировать</a>
+            <a th:href="'/manager/report/' + ${el.id} + '/true'" class="btn btn-info">Отчет по группе (начало года)</a>
+            <a th:href="'/manager/report/' + ${el.id} + '/false'" class="btn btn-info">Отчет по группе (конец года)</a>
+        </form>
+        <form th:action="'/manager/allGroups/group-details/' + ${el.id} +'/remove'" method="post">
+            <button class="btn btn-danger mx-1" type="submit">Удалить</button>
+        </form>
+    </div>
+
+    <br>
+
+    <div class="col-sm-12 alert alert-success">
+        <h5 class="alert-heading text-center">Список группы</h5>
+        <div class="row">
+            <div class="col-sm-10 text-center" style="margin: 0 auto">
+                <table class="table table-bordered table-hover table-striped table-light" id="myTab">
+                    <tbody>
+                    <tr>
+                        <td>ФИО</td>
+                        <td>Дата рождения</td>
+                        <td>Полных лет</td>
+                        <td>Перевести в другую группу</td>
+                    </tr>
+                    <tr th:each="child, index : ${allChildren}">
+                        <td th:text="${index.index + 1 + '. ' + child.fullName}"></td>
+                        <td th:text="${#dates.format(child.dateOfBirth, 'dd.MM.yyyy')}"></td>
+                        <td th:text="${child.getAgeInfo()}"></td>
+                        <td>
+                            <a th:href="'/manager/allGroups/group-details/' + ${el.id} + '/editChild/' + ${child.id}" class="btn btn-success">Перевести</a>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <br>
+        <div class="row g-3" >
+<!--            Для центрирования кнопок-->
+            <div class="col-sm-2">
+            </div>
+            <div class="col-sm-2">
+            </div>
+            <div class="col-sm-2">
+                <form method="post">
+                    <input type="text" name="sorted" value="0" hidden>
+                    <button class="btn btn-primary mx-1" type="submit">Сортировка по ФИО</button>
+                </form>
+            </div>
+            <div class="col-sm-3">
+                <form method="post">
+                    <input type="text" name="sorted" value="1" hidden>
+                    <button class="btn btn-warning mx-1" type="submit">Сортировка по дате рождения</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="col-sm-12 alert alert-success">
+        <h5 class="alert-heading text-center">Результаты педагогического мониторинга</h5>
+        <div class="row">
+            <div class="col-sm-10 text-center" style="margin: 0 auto">
+                <table class="table table-bordered table-hover table-striped table-light" id="myTab_1">
+                    <tbody>
+                    <tr>
+                        <td>Образовательная область</td>
+                        <td>Направление развития</td>
+                        <td>Высокий уровень, %</td>
+                        <td>Средний уровень, %</td>
+                        <td>Низкий уровень, %</td>
+                        <td>Период</td>
+                    </tr>
+                    <tr th:each="groupResultMonitoring, index : ${allGroupResultMonitorings}">
+                        <td th:text="${groupResultMonitoring.getEducationDirection().getEducationArea().getName()}"></td>
+                        <td th:text="${groupResultMonitoring.getEducationDirection().getName()}"></td>
+                        <td th:text="${groupResultMonitoring.getHighLevel()}"></td>
+                        <td th:text="${groupResultMonitoring.getMidLevel()}"></td>
+                        <td th:text="${groupResultMonitoring.getLowLevel()}"></td>
+                        <td th:if="${groupResultMonitoring.isStarEducationYear()}" th:text="'Начало года'"></td>
+                        <td th:if="${!groupResultMonitoring.isStarEducationYear()}" th:text="'Конец года'"></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+
+
+    <div class="col-sm-12 alert alert-success">
+        <h5 class="alert-heading text-center">Список занятий для группы</h5>
+        <div class="row">
+            <div class="col-sm-12 text-center" style="margin: 0 auto">
+                <table class="table table-bordered table-hover table-striped table-light" id="myTab_2">
+                    <tbody>
+                    <tr>
+                        <td class="col-sm-1">№</td>
+                        <td class="col-sm-2">Название урока</td>
+                        <td class="col-sm-2">Образовательная область</td>
+                        <td class="col-sm-2">Направление развития</td>
+                        <td class="col-sm-2">Характеристики занятия</td>
+                        <td class="col-sm-1">День недели</td>
+                        <td class="col-sm-1">Время начала</td>
+                        <td class="col-sm-1">Время конца</td>
+                    </tr>
+                    <tr th:each="lesson, index : ${group.lessons}">
+                        <td th:text="${index.index + 1}"></td>
+                        <td th:text="${lesson.name}"></td>
+                        <td th:text="${lesson.educationDirection.educationArea.name}"></td>
+                        <td th:text="${lesson.educationDirection.name}"></td>
+
+                        <td th:if="${lesson.educationDirection.isHard}" th:text="'Сложное занятие (не ставится в понедельник и пятницу), малоподвижное'"></td>
+                        <td th:if="${lesson.educationDirection.isActivity}" th:text="'Не сложное, подвижное занятие'"></td>
+                        <td th:if="${lesson.educationDirection.isHard == lesson.educationDirection.isActivity}" th:text="'Не сложное, малоподвижное занятие'"></td>
+
+                        <td th:if="${lesson.dayWeek == null}" th:text="'Не назначено'"></td>
+                        <td th:if="${lesson.dayWeek != null}" th:text="${lesson.dayWeek}"></td>
+
+                        <td th:if="${lesson.timeOfStartLesson == null}" th:text="'Не назначено'"></td>
+                        <td th:if="${lesson.timeOfStartLesson != null}" th:text="${#dates.format(lesson.timeOfStartLesson, 'HH:mm')}"></td>
+
+                        <td th:if="${lesson.timeOfEndLesson == null}" th:text="'Не назначено'"></td>
+                        <td th:if="${lesson.timeOfEndLesson != null}" th:text="${#dates.format(lesson.timeOfEndLesson, 'HH:mm')}"></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+</div>
+<div th:insert="blocks/footer :: footer"></div>
+</body>
+</html>

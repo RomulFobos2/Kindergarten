@@ -1,0 +1,155 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Добавить группу</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha1/css/bootstrap.min.css">
+
+    <style>
+html,
+body {
+  height: 100%;
+}
+
+body {
+  display: flex;
+  align-items: center;
+  padding-top: 40px;
+  padding-bottom: 40px;
+  background-color: #f5f5f5;
+}
+
+.form-signin {
+  width: 100%;
+  max-width: 430px;
+  padding: 15px;
+  margin: auto;
+}
+.form-signin .checkbox {
+  font-weight: 400;
+}
+.form-signin .form-control {
+  position: relative;
+  box-sizing: border-box;
+  height: auto;
+  padding: 10px;
+  font-size: 14px;
+}
+.form-signin .form-control:focus {
+  z-index: 2;
+}
+.form-signin input[type="email"] {
+  margin-bottom: -1px;
+  border-bottom-right-radius: 0;
+  border-bottom-left-radius: 0;
+}
+.form-signin input[type="text"] {
+  margin-bottom: -1px;
+  border-bottom-right-radius: 0;
+  border-bottom-left-radius: 0;
+}
+.form-signin input[type="password"] {
+  margin-bottom: -1px;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+}
+.form-signin button[type="submit"] {
+  margin-bottom: 10px;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+}
+.form-signin a{
+
+    font-size: 28px;
+}
+
+    </style>
+
+</head>
+<body class="text-center">
+<main class="form-signin">
+    <div class="container mt-5 mb-5">
+        <form action="/manager/addGroup" method="post">
+            <img class="mb-4" src="https://getbootstrap.com/docs/5.0/assets/brand/bootstrap-logo.svg" alt="" width="72"
+                 height="57">
+            <h1 class="h3 mb-3 fw-normal">Добавление группы</h1>
+            <p class="fs-6 text-danger" th:text="${groupNameError}"></p>
+            <p class="fs-6 text-danger" th:text="${groupSizeError}"></p>
+            <p class="fs-6 text-danger" th:text="${cabinetSizeError}"></p>
+            <div class="row g-3">
+                <div class="col-sm-12">
+                    <input type="text" class="form-control" name="inputGroupName" id="inputGroupName" required
+                           placeholder="Название группы">
+                </div>
+                <div class="col-sm-12">
+                    <select class="form-select" name="inputAgeGroup" id="inputAgeGroup" required>
+                        <option selected disabled value="">Выберите возрастную группу</option>
+                        <option th:each="el : ${allAgeGroups}" th:value="${el.id}" th:text="${el.name}"></option>
+                    </select>
+                </div>
+                <div class="col-sm-12">
+                    <select class="form-select" name="inputCabinet" id="inputCabinet" required>
+                        <option selected disabled value="">Выберите кабинет</option>
+                        <option th:each="el : ${allCabinets}" th:value="${el.id}" th:text="${el.number}"></option>
+                    </select>
+                </div>
+                <div class="col-sm-12">
+                    <select class="form-select" name="inputUser" id="inputUser_1" required onchange="addSelect()">
+                        <option selected disabled value="">Выберите воспитателей</option>
+                        <option th:each="el : ${allUsers}" th:value="${el.id}"
+                                th:text="${el.lastName + ' ' + el.firstName + ' ' + el.patronymicName}"></option>
+                    </select>
+                </div>
+                <div class="col-sm-12">
+                    <select class="form-select" name="inputUser" id="inputUser_2" hidden>
+                        <option selected value="-1">Выберите воспитателей/или оставтье пустым</option>
+                        <option th:each="el : ${allUsers}" th:value="${el.id}"
+                                th:text="${el.lastName + ' ' + el.firstName + ' ' + el.patronymicName}"></option>
+                    </select>
+                </div>
+            </div>
+            <br>
+            <button type="submit" class="w-100 btn btn-lg btn-primary">Добавить</button>
+            <a class="p-2 text-dark" th:href="'/manager/allGroups'">Вернуться</a>
+            <p class="mt-5 mb-3 text-muted">&copy;2022</p>
+        </form>
+    </div>
+</main>
+</body>
+<script th:inline="javascript">
+    function addSelect(){
+                /*<![CDATA[*/
+                document.getElementById('inputUser_2').hidden = false;
+             	var users = [];
+             	var size = 1 + /*[[${maxID}]]*/ ;
+             	for (var i = 0; i < size; i++) {
+             		users.push("0");
+             	}
+             	/*[# th:each="elVar : ${allUsers}"]*/
+             	var index = /*[[${elVar.id}]]*/ ;
+             	users[index] = /*[[${elVar.lastName + " " + elVar.firstName + " " + elVar.patronymicName}]]*/
+                <!--             		Выбранный воспитатель-->
+             	var x = document.getElementById("inputUser_1").value;
+             		/*[/]*/
+             		/*]]>*/
+
+             	var newUsers = [];
+             	/*[# th:each="elNewVar : ${allUsers}"]*/
+             	var index_S = /*[[${elNewVar.id}]]*/
+             		if (x != index_S) {
+             			var var_arr = [];
+             			var_arr.push( /*[[${elNewVar.lastName + " " + elNewVar.firstName + " " + elNewVar.patronymicName}]]*/ , /*[[${elNewVar.id}]]*/ );
+             			newUsers.push(var_arr);
+             		}
+             	/*[/]*/
+                inputUser_2.options.length = 1;
+             	for (var i = 0; i < newUsers.length; i++) {
+             		let newOption = new Option(newUsers[i][0], newUsers[i][1], );
+             		inputUser_2.append(newOption);
+             	}
+             	    }
+
+</script>
+</body>
+</html>
+
